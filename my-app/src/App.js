@@ -1,24 +1,41 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import React, { useEffect, useState } from "react";
+import Button from "@mui/material/Button";
+import Gallery from "./components/Gallery/Gallery.js";
+import Layout from "./components/Layout/Layout.js";
+import { sortItems } from "./utils/sortHelpers.js";
+import { fetchGOTbookData } from "./utils/rest_helpers";
 
 function App() {
+  const [bookData, setBookData] = useState([]);
+  const [shouldSort, setShouldSort] = useState(false);
+
+  const handleClick = () => setShouldSort((shouldSort) => !shouldSort);
+
+  useEffect(() => {
+    async function fetch() {
+      let bookResponse = await fetchGOTbookData();
+      bookResponse = await bookResponse.json();
+
+      setBookData(bookResponse);
+    }
+
+    fetch();
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Layout>
+      <div className="main">
+        <Button onClick={handleClick}>Sort Alphabetically</Button>
+        <Gallery
+          books={
+            shouldSort
+              ? sortItems(bookData, "name")
+              : sortItems(bookData, "name", "desc")
+          }
+        />
+      </div>
+    </Layout>
   );
 }
 

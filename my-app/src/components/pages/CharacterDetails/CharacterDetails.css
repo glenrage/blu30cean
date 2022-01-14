@@ -1,0 +1,9 @@
+.character-card {
+    margin-top: 50px;
+    width: 500px;
+}
+
+.character-container {
+    display: flex;
+    justify-content: center;
+}
